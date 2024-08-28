@@ -5,6 +5,7 @@ import Teachers from "./Components/Teachers";
 import Holidays from "./Components/Holidays";
 import Contact from "./Components/ContactUs";
 import NotFound from "./Components/NotFound";
+import 'animate.css';
 const App = ()=>{
   return(
     <BrowserRouter>

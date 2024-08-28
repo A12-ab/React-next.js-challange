@@ -25,11 +25,13 @@ const menus = [
 ]
 const Nav = ()=>{
     return(
-        <nav style={{
+        <nav 
+            className="sticky top-0 left-0 z-50"
+            style={{
             background: 'white',
             display: 'flex',
             justifyContent: "space-between",
-            padding: '0 48px',
+            padding: '15px 48px',
             boxShadow: '0 8px 8px 0 rgba(0,0,0,0.1)'
         }}>
             <div style={{
@@ -42,7 +44,7 @@ const Nav = ()=>{
                   src="./images/logo.png"
                   width= "60"
                 />
-                <h1>code school</h1>
+                <h1 className="text-2xl font-medium">code school</h1>
 
             </div>
 
