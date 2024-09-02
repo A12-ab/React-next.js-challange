@@ -1,8 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import firebaseAppConfig from "../utils/firebase-config";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+const auth = getAuth(firebaseAppConfig);
 const Layout = ({children})=>{
 
     const [open, setOpen] = useState(false);
+    const [session, setSession] = useState(null);
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user)=>{
+            if(user){
+                setSession(user)
+
+            }else{
+                setSession(null)
+
+            }
+        })
+    },[])
 
     const menus = [
         {
@@ -50,15 +66,28 @@ const Layout = ({children})=>{
 
                             ))
                         }
-                        <Link
-                            to="/login"
-                            className="block py-8 text-center hover:bg-blue-600 w-[100px] hover:text-white"
-                        >Login</Link>
 
-                        <Link
-                            to="/signup"
-                            className="bg-blue-600 py-3 px-12 text-md rounded font-semibold block text-center hover:bg-rose-500 hover:text-white"
-                        >Register</Link>
+                        {
+                            !session && 
+                            <>
+                               <Link
+                                  to="/login"
+                                  className="block py-8 text-center hover:bg-blue-600 w-[100px] hover:text-white"
+                               >Login</Link>
+
+                               <Link
+                                  to="/signup"
+                                  className="bg-blue-600 py-3 px-12 text-md rounded font-semibold block text-center hover:bg-rose-500 hover:text-white"
+                               >Register</Link>
+                            
+                            </>
+                        }
+
+                        {
+                            session &&
+                            <p>hi user</p>
+                        }
+                        
                     </ul>
 
                     
