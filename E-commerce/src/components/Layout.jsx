@@ -54,7 +54,7 @@ const Layout = ({children})=>{
     
     return(
         <div>
-            <nav className="sticky top-0 left-0 shadow-lg bg-white">
+            <nav className="sticky top-0 left-0 shadow-lg bg-white z-50">
                 <div className="w-10/12 mx-auto flex items-center justify-between">
                     <img 
                       src="/images/logo.jpg"
@@ -98,7 +98,7 @@ const Layout = ({children})=>{
                         {
                             session &&
                             <button className="relative" onClick={()=>setAccountMenu(!accountMenu)}>
-                                <img src="/images/my_photo.jpg" className="w-10 h-10 rounded-full"/>
+                                <img src={session.photoURL ? session.photoURL : "/images/my_photo.jpg"} className="w-10 h-10 rounded-full"/>
                                 {
                                     accountMenu && 
                                     <div className=" flex flex-col items-start animate__animated animate__pulse w-[150px] py-3 bg-white  absolute top-12 right-0 shadow-xl">
@@ -206,12 +206,48 @@ const Layout = ({children})=>{
 
                 <aside className="md:hidden bg-slate-900 shadow-lg fixed top-0 left-0 h-full z-50 overflow-hidden"
                        style={{
-                        width: (open ? 250:0),
+                        width: (open ? 300:0),
                         transition: '0.3s'
                        }}
                 >
 
                     <div className="flex flex-col p-8 gap-6 ">
+                        {
+                            session &&
+                            <button className="relative" onClick={()=>setAccountMenu(!accountMenu)}>
+                                <div className="flex items-center gap-2">
+                                    <img src={session.photoURL ? session.photoURL : "/images/my_photo.jpg"} className="w-10 h-10 rounded-full"/>
+                                    <div>
+                                        <p className="text-white capitalize text-left">{session.displayName}</p>
+                                        <p className="text-white">{session.email}</p>
+                                    </div>
+                                    
+                                </div>
+                                
+                                {
+                                    accountMenu && 
+                                    <div className=" flex flex-col items-start animate__animated animate__pulse w-[150px] py-3 bg-white  absolute top-12 right-0 shadow-xl">
+                                        <Link to="/profile" className="w-full text-left px-3 py-2 hover:bg-gray-200">
+                                             <i className="ri-user-line mr-2"></i>
+                                             My profile
+                                        </Link>
+
+                                        <Link to="/cart" className="w-full text-left px-3 py-2 hover:bg-gray-200">
+                                            <i className="ri-shopping-cart-line mr-2"></i>
+                                             Cart
+                                        </Link>
+
+                                        <Link to="#" className="w-full text-left px-3 py-2 hover:bg-gray-200" onClick={()=>signOut(auth)}>
+                                            <i className="ri-logout-circle-r-line mr-2"></i> 
+                                             Logout
+                                        </Link>
+
+                                    </div>
+                                }
+                                
+                            </button>
+                        }
+
                         {
                             menus.map((item,index)=>(
                                 <Link to={item.href} key={index} className="text-white">

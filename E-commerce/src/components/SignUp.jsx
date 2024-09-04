@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import firebaseAppConfig from "../utils/firebase-config";
-import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
+import {getAuth, createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
 
 
 const auth = getAuth(firebaseAppConfig);
@@ -21,8 +21,11 @@ const SignUp = ()=>{
         try{
             e.preventDefault();
             setLoader(true);
-            await createUserWithEmailAndPassword(auth, formValue.email ,formValue.password);
+            const user = await createUserWithEmailAndPassword(auth, formValue.email ,formValue.password);
+            await updateProfile(auth.currentUser, {displayName: formValue.fullname})
             navigate("/");
+            console.log(user);
+            
             
         }
         catch(err){

@@ -25,11 +25,11 @@ const App=()=>{
             <Route path="/" element={<Home/>}/>
             <Route path="/products" element={<Product/>}/>
             <Route path="/category" element={<Category/>}/>
-            
+            <Route path="/profile" element={<Profile/>}/>
+             <Route path="/cart" element={<Cart/>}/>
             <Route element={<PreGuard/>}>
-                <Route path="/cart" element={<Cart/>}/>
-                <Route path="/profile" element={<Profile/>}/>
                 <Route path="/login" element={<Login/>}/>
+               
                 <Route path="/signup" element={<SignUp/>}/>
             </Route>
             
