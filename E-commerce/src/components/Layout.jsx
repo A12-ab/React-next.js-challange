@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import firebaseAppConfig from "../utils/firebase-config";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
@@ -9,6 +9,8 @@ const Layout = ({children})=>{
     const [open, setOpen] = useState(false);
     const [accountMenu, setAccountMenu] = useState(false);
     const [session, setSession] = useState(null);
+    const navigate = useNavigate();
+
     useEffect(()=>{
         onAuthStateChanged(auth, (user)=>{
             if(user){
@@ -39,6 +41,11 @@ const Layout = ({children})=>{
             href: '/contact-us'
         }
     ]
+
+    const mobileLink = (href)=>{
+        navigate(href);
+        setOpen(false)
+    }
 
     if(session===null)
 
@@ -112,10 +119,10 @@ const Layout = ({children})=>{
                                              Cart
                                         </Link>
 
-                                        <Link to="#" className="w-full text-left px-3 py-2 hover:bg-gray-200" onClick={()=>signOut(auth)}>
-                                            <i className="ri-logout-circle-r-line mr-2"></i> 
-                                             Logout
-                                        </Link>
+                                        <button className="w-full text-left px-3 py-2 hover:bg-gray-100" onClick={()=>signOut(auth)}> 
+                                            <i className="ri-logout-circle-r-line mr-2"></i>
+                                            Logout
+                                        </button>
 
                                     </div>
                                 }
@@ -237,10 +244,10 @@ const Layout = ({children})=>{
                                              Cart
                                         </Link>
 
-                                        <Link to="#" className="w-full text-left px-3 py-2 hover:bg-gray-200" onClick={()=>signOut(auth)}>
-                                            <i className="ri-logout-circle-r-line mr-2"></i> 
-                                             Logout
-                                        </Link>
+                                        <button className="w-full text-left px-3 py-2 hover:bg-gray-100" onClick={()=>signOut(auth)}> 
+                                           <i className="ri-logout-circle-r-line mr-2"></i>
+                                           Logout
+                                        </button>
 
                                     </div>
                                 }
@@ -248,13 +255,13 @@ const Layout = ({children})=>{
                             </button>
                         }
 
-                        {
-                            menus.map((item,index)=>(
-                                <Link to={item.href} key={index} className="text-white">
-                                     {item.label}
-                                </Link>
-                            ))
-                        }
+                     {
+                        menus.map((item, index)=>(
+                            <button onClick={()=>mobileLink(item.href)} key={index} className="text-white">
+                                {item.label}
+                            </button>
+                        ))
+                    }
                     </div>
 
                 </aside>

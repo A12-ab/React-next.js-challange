@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAlscJmrEJk0P4aGO2Q-ctgYOLjni4dT7w",
-  authDomain: "nizam-furniture.firebaseapp.com",
-  projectId: "nizam-furniture",
-  storageBucket: "nizam-furniture.appspot.com",
-  messagingSenderId: "352997704982",
-  appId: "1:352997704982:web:06c47fb1fc0bdbf789bc37",
-  measurementId: "G-MEJLSZWQ21"
+  apiKey: "AIzaSyBv_q3yaXh36_nvfwABBYakIdMH7OrT49k",
+  authDomain: "nizam-furniture-882b8.firebaseapp.com",
+  projectId: "nizam-furniture-882b8",
+  storageBucket: "nizam-furniture-882b8.appspot.com",
+  messagingSenderId: "1034048637883",
+  appId: "1:1034048637883:web:667e2e5bd8a064383d929e",
+  measurementId: "G-MRCKLXK9E2"
 };
 
 
