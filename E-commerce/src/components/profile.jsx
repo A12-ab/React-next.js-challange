@@ -3,7 +3,7 @@ import firebaseAppConfig from '../utils/firebase-config'
 import { onAuthStateChanged, getAuth, updateProfile } from 'firebase/auth'
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { useNavigate } from 'react-router-dom'
-import { getFirestore, addDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore'
+import { getFirestore, addDoc, collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore'
 import Layout from './Layout'
 import Swal from 'sweetalert2'
 
@@ -21,6 +21,8 @@ const Profile = ()=>{
         mobile: ''
     })
     const [isAddress, setIsAddress] = useState(false)
+    const [docId, setDocId] = useState(null);
+    const [isUpdated, setIdUpdated] = useState(false);
 
     const [addressForm, setAddressForm] = useState({
         address: '',
@@ -68,6 +70,7 @@ const Profile = ()=>{
 
                 snapshot.forEach((doc)=>{
                     const address = doc.data()
+                    setDocId(doc.id)
                     setAddressForm({
                         ...addressForm,
                         ...address
@@ -76,7 +79,7 @@ const Profile = ()=>{
             }
         }
         req()
-    }, [session])
+    }, [session, isUpdated])
 
     const setProfilePicture = async (e)=>{
         const input = e.target
@@ -126,6 +129,8 @@ const Profile = ()=>{
         try {
             e.preventDefault()
             await addDoc(collection(db, "addresses"), addressForm)
+            setIsAddress(true)
+            setIdUpdated(!isUpdated)
             new Swal({
                 icon: 'success',
                 title: 'Address Saved !'
@@ -144,7 +149,14 @@ const Profile = ()=>{
     const updateAddress = async (e)=>{
         try {
             e.preventDefault()
-            alert()
+            const ref = doc(db, "addresses", docId);
+            await updateDoc(ref, addressForm)
+            
+            new Swal({
+                icon: 'success',
+                title: 'Address Updated!',
+                
+            })
         }
         catch(err)
         {
@@ -235,12 +247,13 @@ const Profile = ()=>{
                         />
                     </div>
 
-                    <div />
+                    <div /> 
+                        <button className='px-4 py-2 bg-rose-600 text-white rounded w-fit hover:bg-green-600'>
+                           <i className="ri-save-line mr-2"></i>
+                           SAVE
+                        </button>
 
-                    <button className='px-4 py-2 bg-rose-600 text-white rounded w-fit hover:bg-green-600'>
-                        <i className="ri-save-line mr-2"></i>
-                        Save
-                    </button>
+                    
                 </form>
             </div>
 
@@ -313,10 +326,20 @@ const Profile = ()=>{
                         />
                     </div>
 
-                    <button className='px-4 py-2 bg-rose-600 text-white rounded w-fit hover:bg-green-600'>
-                        <i className="ri-save-line mr-2"></i>
-                        Save
-                    </button>
+                    {
+                        isAddress ? 
+                        <button className='px-4 py-2 bg-rose-600 text-white rounded w-fit hover:bg-green-600'>
+                          <i className="ri-save-line mr-2"></i>
+                          SAVE
+                        </button>
+                        :
+                        <button className='px-4 py-2 bg-green-600 text-white rounded w-fit'>
+                          <i className="ri-save-line mr-2"></i>
+                          SUBMIT
+                        </button>
+                    }
+
+                    
                 </form>
             </div>
         </Layout>

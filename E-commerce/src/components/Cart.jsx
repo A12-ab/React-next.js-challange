@@ -1,56 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "./Layout";
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+import firebaseAppConfig from "../utils/firebase-config";
+import { getFirestore, getDocs, collection, query, where } from "firebase/firestore";
+const auth = getAuth(firebaseAppConfig);
+const db = getFirestore(firebaseAppConfig)
 const Cart = ()=>{
-    const [products, setProducts] = useState([
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/b.jpg'
-        },
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/c.jpg'
-        },
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/d.jpg'
-        },
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/e.jpg'
-        },
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/f.jpg'
-        },
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/g.jpg'
-        },
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/h.jpg'
-        },
-        {
-            title: 'double bed',
-            price: 25000,
-            discount: 15,
-            image: '/images/i.jpg'
+    const [products, setProducts] = useState([])
+    const [session, setSession] = useState(null);
+
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user)=>{
+            if(user)
+            {
+                setSession(user)
+            }
+            else{
+                setSession(null);
+            }
+        })
+    },[])
+
+    useEffect(()=>{
+        const req = async()=>{
+            if(session){
+                const col = collection(db, "carts");
+                const q = query(col, where("userId", "==", session.uid))
+                const snapshot = await getDocs(q)
+                const tmp = []
+                snapshot.forEach((doc)=>{
+                    const document = doc.data();
+                    tmp.push(document)
+                })
+                setProducts(tmp)
+            }
+
         }
-    ])
+        req();
+
+    },[session])
+
     return(
         <Layout>
             <div className="md:my-16 mx-auto md:w-7/12 bg-white shadow-lg border rounded-md p-8">

@@ -2,9 +2,16 @@ import Layout from "./Layout";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import "swiper/css";
 import { Navigation, Pagination } from 'swiper/modules';
+import { onAuthStateChanged, getAuth } from "firebase/auth";
+import firebaseAppConfig from "../utils/firebase-config";
+import { getFirestore, addDoc, collection } from "firebase/firestore";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+
+const auth = getAuth(firebaseAppConfig);
+const db= getFirestore(firebaseAppConfig);
 const Home = ()=>{
     const [products, setProducts] = useState([
         {
@@ -56,6 +63,34 @@ const Home = ()=>{
             thumbnail: '/images/i.jpg'
         }
     ])
+    const [session, setSession] = useState(null);
+
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user)=>{
+            if(user)
+            {
+                setSession(user)
+            }
+            else{
+                setSession(null);
+            }
+        })
+    },[])
+
+    const addTocart = async(item)=>{
+        try{
+            item.userId = session.uid;
+            await addDoc(collection(db, "carts"), item)
+        }catch(err)
+        {
+            new Swal({
+                icon: 'error',
+                title: 'Failed !',
+                text: err.message
+            })
+        }
+
+    }
     return(
         <Layout>
             <div>
@@ -101,7 +136,7 @@ const Home = ()=>{
                                             <label className="text-gray-600">({item.discount}%)</label>
                                         </div>
                                         <button className="bg-green-600 py-2 w-full rounded text-white font-semibold mt-4">Buy now</button>
-                                        <button className="bg-rose-600 py-2 w-full rounded text-white font-semibold mt-4">
+                                        <button className="bg-rose-600 py-2 w-full rounded text-white font-semibold mt-4" onClick={()=>addTocart(item)}>
                                            <i className="ri-shopping-cart-line mr-2"></i>
                                             Add to cart
                                         </button>
