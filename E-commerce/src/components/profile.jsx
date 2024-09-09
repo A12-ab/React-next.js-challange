@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import firebaseAppConfig from '../utils/firebase-config'
 import { onAuthStateChanged, getAuth, updateProfile } from 'firebase/auth'
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { useNavigate } from 'react-router-dom'
 import { getFirestore, addDoc, collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore'
 import Layout from './Layout'
 import Swal from 'sweetalert2'
+import uploadFile from '../utils/Storage'
 
 const auth = getAuth(firebaseAppConfig)
 const db = getFirestore(firebaseAppConfig)
-const storage = getStorage()
 
 const Profile = ()=>{
     const [uploading, setUploading] = useState(false)
@@ -88,10 +87,9 @@ const Profile = ()=>{
         const ext = filenameArray[filenameArray.length-1]
         const filename = Date.now()+'.'+ext
         const path = `pictures/${filename}`
-        const bucket = ref(storage, path)
         setUploading(true)
-        const snapshot = await uploadBytes(bucket, file)
-        const url = await getDownloadURL(snapshot.ref)
+        
+        const url = await uploadFile(file, path)
         await updateProfile(auth.currentUser,{
             photoURL: url
         })

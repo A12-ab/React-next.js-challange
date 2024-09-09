@@ -2,7 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import firebaseAppConfig from "../utils/firebase-config";
 import {getAuth, createUserWithEmailAndPassword, updateProfile} from "firebase/auth";
+import { addDoc, collection, getFirestore, serverTimestamp } from "firebase/firestore";
 
+const db = getFirestore(firebaseAppConfig);
 
 const auth = getAuth(firebaseAppConfig);
 const SignUp = ()=>{
@@ -21,10 +23,17 @@ const SignUp = ()=>{
         try{
             e.preventDefault();
             setLoader(true);
-            const user = await createUserWithEmailAndPassword(auth, formValue.email ,formValue.password);
+            const userCre = await createUserWithEmailAndPassword(auth, formValue.email ,formValue.password);
             await updateProfile(auth.currentUser, {displayName: formValue.fullname})
+            await addDoc(collection(db, "customers"), {
+                email: formValue.email,
+                customerName: formValue.fullname,
+                userId: userCre.user.uid,
+                role: 'user',
+                createAt: serverTimestamp()
+            })
             navigate("/");
-            console.log(user);
+    
             
             
         }

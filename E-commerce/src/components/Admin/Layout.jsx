@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import firebaseAppConfig from "../../utils/firebase-config";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+
+const auth = getAuth(firebaseAppConfig);
 
 const Layout = ({children}) =>{
 
     const [size, setSize] = useState(280);
     const [mobileSize, setMobileSize] = useState(0);
     const [accountmenu, setAccountmenu] = useState(false);
+    const [session, setSession ] = useState(null);
     const location = useLocation();
+
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user)=>{
+            if(user)
+            {
+                setSession(user)
+            }
+            else{
+                setSession(null);
+            }
+        })
+
+    },[])
     const menu = [
         {
             label: 'Dashboard',
@@ -72,7 +90,7 @@ const Layout = ({children}) =>{
                     
                 </div>
             </aside>
-            <section className="bg-gray-100 h-screen" style={{
+            <section className="bg-gray-100 min-h-screen" style={{
                 marginLeft: size,
                 transition: '0.3s'
             }}>
@@ -91,10 +109,10 @@ const Layout = ({children}) =>{
                                 accountmenu &&
                                 <div className="absolute top-18 right-0 bg-white w-[200px] p-6 shadow-lg">
                                 <div>
-                                    <h1 className="text-lg font-semibold">Abid saharia</h1>
+                                    <h1 className="text-lg font-semibold">{(session && session.displayName) ? session.displayName : "Admin"}</h1>
                                     <p>example@gmail.com</p>
                                     <div className="h-px bg-gray-200 my-4">
-                                        <button>
+                                        <button onClick={()=>signOut(auth)}>
                                             <i className="ri-logout-circle-r-line mr-2"></i>
                                             Logout
 

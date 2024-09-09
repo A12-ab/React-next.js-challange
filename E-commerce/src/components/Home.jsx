@@ -4,7 +4,7 @@ import "swiper/css";
 import { Navigation, Pagination } from 'swiper/modules';
 import { onAuthStateChanged, getAuth } from "firebase/auth";
 import firebaseAppConfig from "../utils/firebase-config";
-import { getFirestore, addDoc, collection } from "firebase/firestore";
+import { getFirestore, addDoc, collection, getDocs } from "firebase/firestore";
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { useEffect, useState } from "react";
@@ -13,56 +13,7 @@ import Swal from "sweetalert2";
 const auth = getAuth(firebaseAppConfig);
 const db= getFirestore(firebaseAppConfig);
 const Home = ()=>{
-    const [products, setProducts] = useState([
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/b.jpg'
-        },
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/c.jpg'
-        },
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/d.jpg'
-        },
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/e.jpg'
-        },
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/f.jpg'
-        },
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/g.jpg'
-        },
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/h.jpg'
-        },
-        {
-            title: 'bed room set',
-            price: 120000,
-            discount: 15,
-            thumbnail: '/images/i.jpg'
-        }
-    ])
+    const [products, setProducts] = useState([])
     const [session, setSession] = useState(null);
 
     useEffect(()=>{
@@ -75,6 +26,21 @@ const Home = ()=>{
                 setSession(null);
             }
         })
+    },[])
+
+    useEffect(()=>{
+        const req = async()=>{
+            const snapshot = await getDocs(collection(db, "products"))
+            const tmp =[]
+            snapshot.forEach((doc)=>{
+                const allProducts = doc.data();
+                allProducts.id = doc.id
+                tmp.push(allProducts)
+            })
+            setProducts(tmp);
+
+        }
+        req();
     },[])
 
     const addTocart = async(item)=>{
@@ -127,9 +93,9 @@ const Home = ()=>{
                           {
                             products.map((item,index)=>(
                                 <div key={index} className="bg-white shadow-lg border">
-                                    <img src={item.thumbnail}/>
+                                    <img src={item.image ? item.image : '/images/a.jpg'}/>
                                     <div className="p-4">
-                                        <h1 className="text-lg font-semibold">{item.title}</h1>
+                                        <h1 className="text-lg font-semibold capitalize">{item.title}</h1>
                                         <div className="space-x-2">
                                             <label className="font-bold text-lg">৳{item.price-(item.price*item.discount)/100}</label>
                                             <del>৳{item.price}</del>

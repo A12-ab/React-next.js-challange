@@ -17,6 +17,7 @@ import Contact from "./components/Contact";
 import Cart from "./components/Cart";
 import Profile from "./components/profile";
 import PreGuard from "./components/Guard/preGuard";
+import AdminGuard from "./components/Guard/AdminGuard";
 import 'animate.css';
 const App=()=>{
   return(
@@ -29,12 +30,12 @@ const App=()=>{
              <Route path="/cart" element={<Cart/>}/>
             <Route element={<PreGuard/>}>
                 <Route path="/login" element={<Login/>}/>
-               
                 <Route path="/signup" element={<SignUp/>}/>
             </Route>
             
             <Route path="/contact-us" element={<Contact/>}/>
-           <Route path="/admin">
+            <Route element={<AdminGuard/>}>
+              <Route path="/admin">
                 <Route path="products" element={<Products/>}/> 
                 <Route path="orders" element={<Orders/>}/>
                 <Route path="dashboard" element={<Dashboard/>}/>
@@ -42,7 +43,9 @@ const App=()=>{
                 <Route path="payments" element={<Payment/>}/>
                 <Route path="settings" element={<Settings/>}/>
                 <Route path="auth" element={<Admin/>}/>
-           </Route>
+              </Route>
+            </Route>
+           
            <Route path="*" element={<NotFound/>}/>
         </Routes>
     
